@@ -71,61 +71,72 @@ public class MainRun {
 	}
  
 	public static void main(String[] args) {
-		String tableName = "base_user";
-		String modelName ="sys";
+		String[]  ts ={ "company" ,"factory" ,"label" ,"label_detail" ,"label_template","line" ,"location" ,"part" ,"part_family" ,"printer" ,"process","shopfloor"};
+		for(int k=0 ; k< ts.length ;k++) {
+		String tableName = ts[k];
+				//"company";
+
+		String middlePackageName = "mes/sys";
+		String modelName  =  middlePackageName.replaceAll("/", ".");
 		String baseOutputDir = "/root/git/imes/imesCore/src/main/java";
 		List<FieldWrapper>  fs = getTableFields( tableName );
 		
 		String beanName = Util.formatTableNameForStartUp(tableName);
 		
-		//1 create model
-		String modelRelativePackageDir ="com/chimade/test/model";
+//		//1 create model
+		String modelRelativePackageDir ="com/chimade/"+middlePackageName+"/model";
 		String beanFullPath = modelRelativePackageDir.replaceAll("/", ".")+"."+beanName ;
 		ModelCreate  mc = new ModelCreate(tableName, fs, baseOutputDir, modelRelativePackageDir);
-		mc.createModel(); 
-	
-		//2 create service interface
-		String serviceRelativePackageDir ="com/chimade/test/service";
-		ServiceInterfaceCreate sc = new ServiceInterfaceCreate(tableName,    baseOutputDir, serviceRelativePackageDir);
-		sc.setBeanFullPath(  beanFullPath ) ;
-		sc.createServiceInterface();
-		
-		//3 create map interface
-		String mapRelativePackageDir = "com/chimade/test/mapper";
-		BeanMapInterfaceCreate mic = new BeanMapInterfaceCreate(tableName, baseOutputDir, mapRelativePackageDir);
-		String modelPackageShortName1 = modelName;
-		mic.setModelShortName(modelPackageShortName1);
-		mic.createMapInterface();
-		
-		//4 create service interface implement
-		String serviceImplRelativePackageDir ="com/chimade/test/service/impl";
-		ServiceInterfaceImplCreate  sic = new ServiceInterfaceImplCreate(tableName, baseOutputDir, serviceImplRelativePackageDir);
-		String modelPackageShortName2 =modelName;
-		sic.setModelShortName( modelPackageShortName2 );
-		sic.createServiceInterfaceImpl();
-	
-		
-		//5 create map xml
-		String mapXmlRelativePackageDir = "com/chimade/test/mapper";
-		BeanMapXmlCreate mXmlc =new BeanMapXmlCreate(tableName, fs, baseOutputDir, mapXmlRelativePackageDir);
-		String xmpNamespace = mapRelativePackageDir.replaceAll("/", ".");
-		xmpNamespace ="<mapper namespace=\""+xmpNamespace + "." + beanName +"\">";
-		mXmlc.setNamespace( xmpNamespace);
-		mXmlc.createMapXml();
-		
-		//6 create service interface implement
-		String controllerRelativePackageDir ="com/chimade/test/controller";
-		ControllerCreate cc = new ControllerCreate(tableName, baseOutputDir, controllerRelativePackageDir);
-		String modelPackageShortName3 =modelName;
-		cc.setModelShortName( modelPackageShortName3 );
-		cc.createControl();
-		
-		
+//		mc.createModel(); 
+//	
+//		//2 create service interface
+//		String serviceRelativePackageDir ="com/chimade/"+middlePackageName+"/service";
+//		ServiceInterfaceCreate sc = new ServiceInterfaceCreate(tableName,    baseOutputDir, serviceRelativePackageDir);
+//		sc.setBeanFullPath(  beanFullPath ) ;
+//		sc.createServiceInterface();
+//		
+//		//3 create map interface
+//		String mapRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
+//		BeanMapInterfaceCreate mic = new BeanMapInterfaceCreate(tableName, baseOutputDir, mapRelativePackageDir);
+//		String modelPackageShortName1 = modelName;
+//		mic.setModelShortName(modelPackageShortName1);
+//		mic.createMapInterface();
+//		
+//		//4 create service interface implement
+//		String serviceImplRelativePackageDir ="com/chimade/"+middlePackageName+"/service/impl";
+//		ServiceInterfaceImplCreate  sic = new ServiceInterfaceImplCreate(tableName, baseOutputDir, serviceImplRelativePackageDir);
+//		String modelPackageShortName2 =modelName;
+//		sic.setModelShortName( modelPackageShortName2 );
+//		sic.createServiceInterfaceImpl();
+//	
+//		
+//		//5 create map xml
+//		String mapXmlRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
+//		BeanMapXmlCreate mXmlc =new BeanMapXmlCreate(tableName, fs, baseOutputDir, mapXmlRelativePackageDir);
+//		String xmpNamespace = mapRelativePackageDir.replaceAll("/", ".");
+//		xmpNamespace ="<mapper namespace=\""+xmpNamespace + "." + beanName +"Mapper\">";
+//		mXmlc.setNamespace( xmpNamespace);
+//		mXmlc.createMapXml();
+//		
+//		//6 create service interface implement
+//		String controllerRelativePackageDir ="com/chimade/"+middlePackageName+"/controller";
+//		ControllerCreate cc = new ControllerCreate(tableName, baseOutputDir, controllerRelativePackageDir);
+//		String modelPackageShortName3 =modelName;
+//		cc.setModelShortName( modelPackageShortName3 );
+//		cc.createControl();
+//		
+//		
 		//create Js
-		baseOutputDir = "//root/git/imes/imesWeb/src/main/webapp/test";
+		baseOutputDir = "//root/git/imes/imesWeb/src/main/webapp/static";
 		JsCreate jc = new JsCreate( fs, tableName , baseOutputDir, "app");
 		jc.createAllJs();
- 
+		 String store="<script type=\"text/javascript\" src=\"app/store/SysFactoryStore.js\"></script>".replaceAll("Factory", beanName);
+	      String model="<script type=\"text/javascript\" src=\"app/model/SysFactoryModel.js\"></script>".replaceAll("Factory", beanName);
+	       String form="<script type=\"text/javascript\" src=\"app/view/examples/forms/Factory.js\"></script>".replaceAll("Factory", beanName);
+	       System.out.println(store);
+	       System.out.println(model);
+	       System.out.println(form);
+		}
 	}
 
 }

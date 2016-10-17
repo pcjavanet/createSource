@@ -41,6 +41,8 @@ public class ModelCreate extends BaseCreate{
 			//create fields
 			for(int i=0 ; i<fs.size() ;i++) {
 				String fieldMsg = "   private " +fs.get(i).getType()  + "   " + fs.get(i).getJavaFieldName() + ";";
+				if (  fs.get(i).getJavaFieldName().equalsIgnoreCase("id") )
+					fieldMsg = "   private   int " + fs.get(i).getJavaFieldName() + ";";
 				bf.write(fieldMsg);
 				bf.write("\r\n");
 			}
@@ -55,6 +57,8 @@ public class ModelCreate extends BaseCreate{
 				if ( i !=( fs.size()-1) )
 					constuctorFields.append(",");
 				String  line1FieldSetting = "   public  void  set"+newJavaFielddName+ "(" +fs.get(i).getType()  + "   " +javaFieldName + " ) {";
+				if (  fs.get(i).getJavaFieldName().equalsIgnoreCase("id") )
+					line1FieldSetting = "   public  void  setId(int id) {";
 				bf.write(line1FieldSetting);
 				bf.write("\r\n");
 				String line2FieldSetting = "   		this." +javaFieldName + " = "+javaFieldName+";" ;
@@ -64,12 +68,13 @@ public class ModelCreate extends BaseCreate{
 				bf.write(line3FieldSetting);
 				bf.write("\r\n");
 				
-				
 				String  line1FieldGettinng= "   public  " +fs.get(i).getType()  + "   get" +newJavaFielddName + " ()  {";
+				if (  fs.get(i).getName().equalsIgnoreCase("id"))
+					 line1FieldGettinng= "   public  int getId ( )  {";
 				bf.write(line1FieldGettinng);
 				bf.write("\r\n");
 				
-				String line2FieldGettinng = "   		return " +javaFieldName +";" ;
+				String line2FieldGettinng =  "   		return " +javaFieldName +";" ;
 				bf.write(line2FieldGettinng);
 				bf.write("\r\n");
 				

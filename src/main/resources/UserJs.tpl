@@ -128,12 +128,13 @@ Ext.define('KitchenSink.view.examples.forms.User', {
                        	handler: function() {
 		                       		 var form = this.up('form').getForm();
 		                       		 var 	 user = form.getValues();
-		                       		pluginStore.on('beforeload', function (store, options) {
+		                           	var st = 	 this.up('gridpanel').getStore();
+		                       		st.on('beforeload', function (store, options) {
 		                       			var new_params = user;
 		                       			Ext.apply(store.proxy.extraParams, user) ;
 		                       		}) ;
-		                       		pluginStore.currentPage=1 ;
-		                       		pluginStore.load( ) ;
+		                       		st.currentPage=1 ;
+		                       		st.load( ) ;
                        	}
        		        }, {
        		            text: 'Reset',

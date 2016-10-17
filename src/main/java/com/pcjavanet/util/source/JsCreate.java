@@ -158,7 +158,7 @@ public class JsCreate extends BaseCreate{
 		for(int i=0 ; i<fs.size() ;i++) {
 				if ( i%2 ==0 ){
 					bf1.append("\r\n				{ ");
-					bf1.append("\r\n    				  xtype:'texttfield',\r\n");
+					bf1.append("\r\n    				  xtype:'textfield',\r\n");
 					bf1.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
 					bf1.append("				  name:'"+fs.get(i).getJavaFieldName()+"'\r\n");
 					bf1.append("				} \r\n");
@@ -166,7 +166,7 @@ public class JsCreate extends BaseCreate{
 					 bf1.append("				,");
 				} else {
 					bf2.append("\r\n				{ ");
-					bf2.append("\r\n    				  xtype:'texttfield',\r\n");
+					bf2.append("\r\n    				  xtype:'textfield',\r\n");
 					bf2.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
 					bf2.append("				  name:'"+fs.get(i).getJavaFieldName()+"'\r\n");
 					bf2.append("				} \r\n");

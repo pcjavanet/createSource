@@ -72,7 +72,7 @@ public class MainRun {
  
 	public static void main(String[] args) {
 		String tableName = "base_user";
-		String modelName ="test";
+		String modelName ="sys";
 		String baseOutputDir = "/root/git/imes/imesCore/src/main/java";
 		List<FieldWrapper>  fs = getTableFields( tableName );
 		

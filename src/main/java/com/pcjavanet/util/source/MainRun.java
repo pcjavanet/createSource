@@ -87,7 +87,11 @@ public class MainRun {
 		String modelRelativePackageDir ="com/chimade/"+middlePackageName+"/model";
 		String beanFullPath = modelRelativePackageDir.replaceAll("/", ".")+"."+beanName ;
 		ModelCreate  mc = new ModelCreate(tableName, fs, baseOutputDir, modelRelativePackageDir);
+<<<<<<< HEAD
 //		mc.createModel(); 
+=======
+		mc.createModel(); 
+>>>>>>> refs/remotes/origin/master
 //	
 //		//2 create service interface
 //		String serviceRelativePackageDir ="com/chimade/"+middlePackageName+"/service";
@@ -130,12 +134,15 @@ public class MainRun {
 		baseOutputDir = "//root/git/imes/imesWeb/src/main/webapp/static";
 		JsCreate jc = new JsCreate( fs, tableName , baseOutputDir, "app");
 		jc.createAllJs();
+<<<<<<< HEAD
 		 String store="<script type=\"text/javascript\" src=\"app/store/SysFactoryStore.js\"></script>".replaceAll("Factory", beanName);
 	      String model="<script type=\"text/javascript\" src=\"app/model/SysFactoryModel.js\"></script>".replaceAll("Factory", beanName);
 	       String form="<script type=\"text/javascript\" src=\"app/view/examples/forms/Factory.js\"></script>".replaceAll("Factory", beanName);
 	       System.out.println(store);
 	       System.out.println(model);
 	       System.out.println(form);
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

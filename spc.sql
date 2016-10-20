@@ -1,4 +1,5 @@
 　连续型
+Only for study
 　select serial_number, cparam1,  cparam2,  INT4( EXTRACT( EPOCH FROM (SELECT date_trunc('second',ts)))) as "a_DateTime" ,part_number
 			 FROM spc.v_serial_activity_defect  where 
 		//  process_name =  monitor.getMonitorShortName() 

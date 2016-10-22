@@ -35,6 +35,7 @@ public class UserController {
 		PageReturnMsgBean mb = new PageReturnMsgBean();
 		if ( b == true ){
 			mb.setResultFlag(true);
+			mb.setSuccess(true);
 			mb.setMsg(  SystemContant.CONTROLLER_ADD_SUCCESS );
 		} else {
 			mb.setMsg(  SystemContant.CONTROLLER_ADD_FAILURE );
@@ -48,6 +49,7 @@ public class UserController {
 		PageReturnMsgBean mb = new PageReturnMsgBean();
 		if ( b == true ){
 			mb.setResultFlag(true);
+			mb.setSuccess(true);
 			mb.setMsg(  SystemContant.CONTROLLER_DELETE_SUCCESS );
 		} else {
 			mb.setMsg(  SystemContant.CONTROLLER_DELETE_FAILURE );
@@ -61,6 +63,7 @@ public class UserController {
 		PageReturnMsgBean mb = new PageReturnMsgBean();
 		if ( b == true ){
 			mb.setResultFlag(true);
+			mb.setSuccess(true);
 			mb.setMsg(  SystemContant.CONTROLLER_UPDATE_SUCCESS );
 		} else {
 			mb.setMsg(  SystemContant.CONTROLLER_UPDATE_FAILURE );

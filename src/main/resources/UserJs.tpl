@@ -169,18 +169,23 @@ Ext.define('KitchenSink.view.examples.forms.User', {
        		        },{
         		            text: 'Delete',
         		            	handler: function() {
-        		            		var selModel =  this.up('gridpanel').getSelectionModel().getSelection() ;
-        		            		var ids = "";
-        		            		for(var k=0 ;k<selModel.length ;k++){
-        		            			ids = ids+ selModel[k].data.id +",";
-        		            			selModel[k].destroy({
-        		            			    success: function() {
-        		            			        console.log('The User was destroyed!');
-        		            			    }
-        		            			});
+
+        		            		var gridPanel =  this.up('gridpanel') ;
+        		            		var selModel =  gridPanel.getSelectionModel().getSelection() ;
+        		            		if ( selModel.length && selModel.length> 0) { 
+        		            		Ext.MessageBox.confirm('提示', '确认删除吗',  function(btn) {
+        		            			 if ( btn =='yes'){
+        	        		            		for(var k=0 ;k<selModel.length ;k++){
+        	        		            			selModel[k].destroy({
+        	        		            			    success: function() {
+        	        		            			    }
+        	        		            			});
+        	        		            		}
+        	        		            		gridPanel.getStore().load();
+        		            			 }
+        		            		}); 
         		            		}
-        		            		alert("delete ids:"+ids);
-        		            		this.up('gridpanel').getStore().load();
+        		            	
         		            	}
        		        }
        		        ]

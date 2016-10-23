@@ -2,6 +2,7 @@ package com.pcjavanet.util.source;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BeanMapXmlCreate extends BaseCreate{
@@ -9,6 +10,7 @@ public class BeanMapXmlCreate extends BaseCreate{
 	private List<FieldWrapper>  fs ;
 	private String xmpNamespace;
 	private String beanName ; 
+	private List<FieldWrapper> refIds  = new ArrayList<FieldWrapper>();
 	public BeanMapXmlCreate(String tableName ,List<FieldWrapper>  fs , String baseOutputDir ,  String modelRelativePackageDir ){
 		super( tableName, baseOutputDir , modelRelativePackageDir );
 		beanName =  Util.formatTableNameForStartUp(tableName);
@@ -38,6 +40,11 @@ public class BeanMapXmlCreate extends BaseCreate{
 		  bf.append( "\r\n" );
 		  createUpdate(bf);
 		  bf.append( "\r\n" );
+		   createSelectColumnsForInclude(bf);
+		   bf.append( "\r\n" );
+		   createSqlWhereForInclude( bf );
+		   
+		   bf.append( "\r\n" );
 		  createFindById(	bf );
 		  bf.append( "\r\n" );
 		  createFindAll(bf);
@@ -45,7 +52,8 @@ public class BeanMapXmlCreate extends BaseCreate{
 		  createFindByBean(bf	);
 		  bf.append( "\r\n" );
 		  createFindByBeanOfTotal(bf);
-		  
+		  bf.append( "\r\n" );
+		  createResultMapSample(bf);
 		  bf.append( "\r\n" );
 		  bf.append("</mapper>");
 		  bf.append( "\r\n" );
@@ -66,11 +74,19 @@ public class BeanMapXmlCreate extends BaseCreate{
 		StringBuffer fds = new StringBuffer();
 		StringBuffer vs = new StringBuffer();
 		for(int i=0 ;i < fs.size() ;i++) {
-			if ( fs.get(i).getName().equalsIgnoreCase("id")){
+			String n =  fs.get(i).getName() ; 
+			if ( n .equalsIgnoreCase("id")){
 				continue ;
 			} else {
-				fds.append(  fs.get(i).getName() ).append(",");
+				fds.append( n ).append(",");
 				vs.append("#{"+  fs.get(i).getJavaFieldName() +"}").append(",");
+				if  ( n.indexOf("_id")  != -1 ) {
+					String n1 = n.substring(0, n.length()-3);
+					String n2=   fs.get(i).getJavaFieldName().substring(0,n1.length());
+					if ( n1.equals( n2)) {
+						refIds.add(  fs.get(i) );
+					}
+				}
 			}
 		}
 		String fdsto = fds.toString();
@@ -84,6 +100,57 @@ public class BeanMapXmlCreate extends BaseCreate{
 		String suffer = "	</insert>";
 		bf.append(suffer );
 		bf.append( "\r\n" );
+	}
+	
+	private void createSqlWhereForInclude (StringBuffer  buf ) {
+		buf.append("<sql id=\"where\">");
+		buf.append("	<where>");  
+		buf.append("\r\n");
+		for(int i=0 ;i < fs.size() ;i++) {
+			buf.append("			<if test=\""+fs.get(i).getJavaFieldName()+"!=null and "		+fs.get(i).getJavaFieldName()+"!='' \"> ");
+		    buf.append("\r\n");
+			buf.append("			and " +fs.get(i).getName()+ " LIKE CONCAT('%', CONCAT(#{"+fs.get(i).getJavaFieldName()+"}, '%'))"); 
+		    buf.append("\r\n");
+			buf.append("	 		</if>  ");
+		    buf.append("\r\n");
+		}
+        buf.append("	</where>");
+        buf.append("</sql>");
+	}
+	
+	private void createSelectColumnsForInclude( StringBuffer bf) {
+		StringBuffer fds = new StringBuffer();
+		for(int i=0 ;i < fs.size() ;i++) {
+			FieldWrapper f = fs.get(i);
+			if ( f.isMoreWord()){
+				fds.append(f.getName()).append("  ").append( f.getJavaFieldName()).append(",");
+			}else 
+				fds.append(f.getName() ).append(",");
+		}
+		String fdsto = fds.toString() ;
+		fdsto= fdsto.substring(0, fdsto.length() -1 );
+		
+		bf.append("	<sql id=\"selectColumns\" >\r\n");
+		bf.append("		"+ fdsto );
+		bf.append("	</sql>" );
+	}
+	
+	private void createResultMapSample( StringBuffer strbuf	  ) {
+		for( int i=0 ;i<refIds.size() ;i++) {
+			FieldWrapper fw = refIds.get(i);
+			String javaFieldName = fw.getJavaFieldName() ;
+			
+			 if (  fw .getName() .indexOf("_id") !=-1  &&
+					 javaFieldName.substring(javaFieldName.length()-2, javaFieldName.length() ).equals("Id") ){
+				 String beanName = javaFieldName.substring( 	javaFieldName.length()-2, javaFieldName.length( ));
+				 StringBuffer bf = new StringBuffer();
+				 bf.append( "<!-- 	<resultMap id=\"combineFactory\"    type=\"com.chimade.mes.sys.model.Factory\"> -->\rn");
+				 bf.append( "<!-- 	        <result property=\"companyId\" column=\"companyId\" />   -->\rn".replaceAll("companyId",	beanName));
+				 bf.append( "<!-- 			<association    property=\"company\"   column=\"companyId\"	 	javaType=\"Company\"   select=\"com.chimade.mes.sys.mapper.CompanyMapper.findById\"  />  -->\rn".replaceAll("company", beanName));
+				 bf.append( "<!--  	</resultMap> -->\rn");
+				 strbuf.append(bf.toString() );
+			 }
+		}
 	}
 	
 	private void createUpdate(StringBuffer bf ) {
@@ -124,7 +191,7 @@ public class BeanMapXmlCreate extends BaseCreate{
 		String prefix ="	<select id=\"findById\" parameterType=\"int\" resultType=\"User\">".replaceAll("User", beanName);
 		bf.append(prefix);
 		bf.append( "\r\n" );
-		StringBuffer fds = new StringBuffer();
+/*		StringBuffer fds = new StringBuffer();
 		for(int i=0 ;i < fs.size() ;i++) {
 			FieldWrapper f = fs.get(i);
 			if ( f.isMoreWord()){
@@ -133,8 +200,9 @@ public class BeanMapXmlCreate extends BaseCreate{
 				fds.append(f.getName() ).append(",");
 		}
 		String fdsto = fds.toString() ;
-		fdsto= fdsto.substring(0, fdsto.length() -1 );
-		String sql = " SELECT "+fdsto + " FROM "+tableName +  "  WHERE id=#{id} ";
+		fdsto= fdsto.substring(0, fdsto.length() -1 );*/
+		String sql = "		SELECT   <include refid=\"selectColumns\"/>  FROM "+tableName +  "  WHERE id=#{id} ";
+//		String sql = " SELECT "+fdsto + " FROM "+tableName +  "  WHERE id=#{id} ";
 		bf.append(sql);
 		bf.append( "\r\n" );
 		String suffer = "	</select>";
@@ -146,7 +214,7 @@ public class BeanMapXmlCreate extends BaseCreate{
 		String prefix ="	<select id=\"findAll\"  resultType=\"User\">".replaceAll("User", beanName);
 		bf.append(prefix);
 		bf.append( "\r\n" );
-		StringBuffer fds = new StringBuffer();
+/*		StringBuffer fds = new StringBuffer();
 		for(int i=0 ;i < fs.size() ;i++) {
 			FieldWrapper f = fs.get(i);
 			if ( f.isMoreWord()){
@@ -155,8 +223,8 @@ public class BeanMapXmlCreate extends BaseCreate{
 				fds.append(f.getName() ).append(",");
 		}
 		String fdsto = fds.toString() ;
-		fdsto= fdsto.substring(0, fdsto.length() -1 );
-		String sql = "	SELECT "+fdsto + " FROM "+ tableName + "  ";
+		fdsto= fdsto.substring(0, fdsto.length() -1 );*/
+		String sql = "		SELECT   <include refid=\"selectColumns\"/> FROM "+ tableName + "  ";
 		bf.append(sql);
 		bf.append( "\r\n" );
 		String suffer = "	</select>";
@@ -166,7 +234,7 @@ public class BeanMapXmlCreate extends BaseCreate{
 	
 	private String createWhereCondition( ) {
 		StringBuffer buf = new StringBuffer();
-		buf.append("\r\n");
+/*		buf.append("\r\n");
 		buf.append("	<where>");  
 		buf.append("\r\n");
 		for(int i=0 ;i < fs.size() ;i++) {
@@ -177,25 +245,26 @@ public class BeanMapXmlCreate extends BaseCreate{
 			buf.append("	 		</if>  ");
 		    buf.append("\r\n");
 		}
-        buf.append("	</where>");
+        buf.append("	</where>");*/
 //        buf.append("\r\n");
+		buf.append("	<include refid=\"where\" /> ");
 		return buf.toString();
 	}
 	private void createFindByBean(StringBuffer bf ) {
 		String prefix ="	<select id=\"findBySearch\" parameterType=\"User\" resultType=\"User\">".replaceAll("User", beanName);
 		bf.append(prefix);
 		bf.append( "\r\n" );
-		StringBuffer fds = new StringBuffer();
-		for(int i=0 ;i < fs.size() ;i++) {
-			FieldWrapper f = fs.get(i);
-			if ( f.isMoreWord()){
-				fds.append(f.getName()).append("  ").append( f.getJavaFieldName()).append(",");
-			}else 
-				fds.append(f.getName() ).append(",");
-		}
-		String fdsto = fds.toString() ;
-		fdsto= fdsto.substring(0, fdsto.length() -1 );
-		String sql = " 	SELECT "+fdsto + " FROM "+ tableName + "    ";
+//		StringBuffer fds = new StringBuffer();
+//		for(int i=0 ;i < fs.size() ;i++) {
+//			FieldWrapper f = fs.get(i);
+//			if ( f.isMoreWord()){
+//				fds.append(f.getName()).append("  ").append( f.getJavaFieldName()).append(",");
+//			}else 
+//				fds.append(f.getName() ).append(",");
+//		}
+//		String fdsto = fds.toString() ;
+//		fdsto= fdsto.substring(0, fdsto.length() -1 );
+		String sql = "		SELECT  <include refid=\"selectColumns\"/> FROM "+ tableName + "    ";
 		bf.append(sql);
 		bf.append(createWhereCondition());
 		bf.append( "\r\n" );
@@ -217,11 +286,6 @@ public class BeanMapXmlCreate extends BaseCreate{
 		bf.append(sql);
 		bf.append(createWhereCondition());
 		bf.append( "\r\n" );
-//	    bf.append(" <if test=\"start>-1 and limit>-1\">");
-//	    bf.append( "\r\n" );
-//	    bf.append( "   limit #{limit}   offset #{start}");
-//	    bf.append( "   </if> ");
-//        bf.append( "\r\n" );
 		String suffer = "	</select>";
 		bf.append(suffer);
 		bf.append( "\r\n" );

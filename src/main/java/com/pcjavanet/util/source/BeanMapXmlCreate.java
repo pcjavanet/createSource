@@ -103,8 +103,8 @@ public class BeanMapXmlCreate extends BaseCreate{
 	}
 	
 	private void createSqlWhereForInclude (StringBuffer  buf ) {
-		buf.append("<sql id=\"where\">");
-		buf.append("	<where>");  
+		buf.append("	<sql id=\"where\">\r\n");
+		buf.append("		<where>");  
 		buf.append("\r\n");
 		for(int i=0 ;i < fs.size() ;i++) {
 			buf.append("			<if test=\""+fs.get(i).getJavaFieldName()+"!=null and "		+fs.get(i).getJavaFieldName()+"!='' \"> ");
@@ -136,21 +136,26 @@ public class BeanMapXmlCreate extends BaseCreate{
 	}
 	
 	private void createResultMapSample( StringBuffer strbuf	  ) {
+		boolean  first = true ; 
 		for( int i=0 ;i<refIds.size() ;i++) {
 			FieldWrapper fw = refIds.get(i);
-			String javaFieldName = fw.getJavaFieldName() ;
 			
-			 if (  fw .getName() .indexOf("_id") !=-1  &&
-					 javaFieldName.substring(javaFieldName.length()-2, javaFieldName.length() ).equals("Id") ){
-				 String beanName = javaFieldName.substring( 	javaFieldName.length()-2, javaFieldName.length( ));
+			 if ( fw.isReferenBean() ) {
+				 String beanName = fw.getRefBeanName();
+				 String beanSmallName = fw.getRefBeanSmallName();
 				 StringBuffer bf = new StringBuffer();
-				 bf.append( "<!-- 	<resultMap id=\"combineFactory\"    type=\"com.chimade.mes.sys.model.Factory\"> -->\rn");
-				 bf.append( "<!-- 	        <result property=\"companyId\" column=\"companyId\" />   -->\rn".replaceAll("companyId",	beanName));
-				 bf.append( "<!-- 			<association    property=\"company\"   column=\"companyId\"	 	javaType=\"Company\"   select=\"com.chimade.mes.sys.mapper.CompanyMapper.findById\"  />  -->\rn".replaceAll("company", beanName));
-				 bf.append( "<!--  	</resultMap> -->\rn");
+				 if ( first ) {
+				 bf.append( "<!-- 	<resultMap id=\"combineFactory\"    type=\"com.chimade.mes.sys.model.Factory\"> -->\r\n".replaceAll("Factory", beanName));
+				 bf.append( "<!-- 	        <result property=\"companyId\" column=\"companyId\" />   -->\r\n".replaceAll("companyId",	beanSmallName));
+				 first = false ;
+				 }
+				 bf.append( "<!-- 			<association    property=\"company\"   column=\"companyId\"	 	javaType=\"Company\"   select=\"com.chimade.mes.sys.mapper.CompanyMapper.findById\"  />  -->\r\n".
+						 replaceAll("company", beanSmallName) . replaceAll("Company", beanName));
 				 strbuf.append(bf.toString() );
 			 }
 		}
+		 if (first == false)
+			 strbuf.append( "<!--  	</resultMap> -->\r\n");
 	}
 	
 	private void createUpdate(StringBuffer bf ) {

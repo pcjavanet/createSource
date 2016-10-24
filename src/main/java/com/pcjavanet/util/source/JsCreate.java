@@ -21,9 +21,9 @@ public class JsCreate extends BaseCreate{
 	public void  createAllJs() {
 		String tmp = modelRelativePackageDir ;
 		
-//		createModel();
+		createModel();
 		modelRelativePackageDir  =tmp;
-//		createStore();
+		createStore();
 		
 		modelRelativePackageDir  =tmp;
 		createView() ;

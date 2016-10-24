@@ -33,11 +33,12 @@ public class MainRun {
 			String sql = "   select * from  " + tableName ;
 			ResultSet rs = connection.createStatement().executeQuery(  sql );
 			ResultSetMetaData rsmd = rs.getMetaData();
-          for(int i=0 ;i < rsmd.getColumnCount() ; i++	) {
-        		String name =rsmd.getColumnName(i+1);
+          for(int i=1 ;i<= rsmd.getColumnCount() ; i++	) {
+        		String name =rsmd.getColumnName(i);
         		boolean isMoreWord = false ;
-        		String typeName =rsmd.getColumnClassName(i+1);
-        		String javaName = rsmd.getColumnName(i+1);
+        		String typeName = Util.getType(   	rsmd.getColumnTypeName(i) 	);
+        				//rsmd.getColumnClassName( i );
+        		String javaName = rsmd.getColumnName(i);
         		int index =  typeName .indexOf("java.lang.") ;
         		if  ( index   !=-1	) {
         			typeName =typeName.substring(index+"java.lang.".length(), typeName.length()) ;
@@ -61,6 +62,16 @@ public class MainRun {
         		fw.setName(name);
         		fw.setType(typeName);
         		fw.setJavaFieldName(javaName);
+        		if ( name.indexOf("_id")  !=-1 ) {
+        			String n = name.substring(0,name.length()-3) ;
+        			String n2 = javaName.substring(0,n.length());
+        			if ( n.equals(n2)) {
+        				fw.setReferenBean(true);
+        				String n3 =n2.substring(0, 1).toUpperCase() +n2.substring(1,n2.length());
+        				fw.setRefBeanName(n3);
+        				fw.setRefBeanSmallName(n2);
+        			}
+        		}
         		ls.add(fw);
           }
  
@@ -71,7 +82,12 @@ public class MainRun {
 	}
  
 	public static void main(String[] args) {
-		String[]  ts ={ "company" ,"factory" ,"label" ,"label_detail" ,"label_template","line" ,"location" ,"part" ,"part_family" ,"printer" ,"process","shopfloor"};
+		Util.init();
+//		String[]  ts ={ "company" ,"factory" ,"label" ,"label_detail" ,"label_template","line" ,"location" ,"part" ,"part_family" ,"printer" ,"process","shopfloor"};
+		String[] ts={
+				"base_authorize_model_action"
+				 ,
+				"base_action","base_model_action","base_factory_user","base_role" };
 		for(int k=0 ; k< ts.length ;k++) {
 		String tableName = ts[k];
 				//"company";
@@ -80,50 +96,50 @@ public class MainRun {
 		String modelName  =  middlePackageName.replaceAll("/", ".");
 		String baseOutputDir = "/root/git/imes/imesCore/src/main/java";
 		List<FieldWrapper>  fs = getTableFields( tableName );
-		
+	 
 		String beanName = Util.formatTableNameForStartUp(tableName);
 		
 //		//1 create model
 		String modelRelativePackageDir ="com/chimade/"+middlePackageName+"/model";
 		String beanFullPath = modelRelativePackageDir.replaceAll("/", ".")+"."+beanName ;
 		ModelCreate  mc = new ModelCreate(tableName, fs, baseOutputDir, modelRelativePackageDir);
-//		mc.createModel(); 
+		mc.createModel(); 
 //	
 //		//2 create service interface
-//		String serviceRelativePackageDir ="com/chimade/"+middlePackageName+"/service";
-//		ServiceInterfaceCreate sc = new ServiceInterfaceCreate(tableName,    baseOutputDir, serviceRelativePackageDir);
-//		sc.setBeanFullPath(  beanFullPath ) ;
-//		sc.createServiceInterface();
+		String serviceRelativePackageDir ="com/chimade/"+middlePackageName+"/service";
+		ServiceInterfaceCreate sc = new ServiceInterfaceCreate(tableName,    baseOutputDir, serviceRelativePackageDir);
+		sc.setBeanFullPath(  beanFullPath ) ;
+		sc.createServiceInterface();
 //		
 //		//3 create map interface
-//		String mapRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
-//		BeanMapInterfaceCreate mic = new BeanMapInterfaceCreate(tableName, baseOutputDir, mapRelativePackageDir);
-//		String modelPackageShortName1 = modelName;
-//		mic.setModelShortName(modelPackageShortName1);
-//		mic.createMapInterface();
+		String mapRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
+		BeanMapInterfaceCreate mic = new BeanMapInterfaceCreate(tableName, baseOutputDir, mapRelativePackageDir);
+		String modelPackageShortName1 = modelName;
+		mic.setModelShortName(modelPackageShortName1);
+		mic.createMapInterface();
 //		
 //		//4 create service interface implement
-//		String serviceImplRelativePackageDir ="com/chimade/"+middlePackageName+"/service/impl";
-//		ServiceInterfaceImplCreate  sic = new ServiceInterfaceImplCreate(tableName, baseOutputDir, serviceImplRelativePackageDir);
-//		String modelPackageShortName2 =modelName;
-//		sic.setModelShortName( modelPackageShortName2 );
-//		sic.createServiceInterfaceImpl();
+		String serviceImplRelativePackageDir ="com/chimade/"+middlePackageName+"/service/impl";
+		ServiceInterfaceImplCreate  sic = new ServiceInterfaceImplCreate(tableName, baseOutputDir, serviceImplRelativePackageDir);
+		String modelPackageShortName2 =modelName;
+		sic.setModelShortName( modelPackageShortName2 );
+		sic.createServiceInterfaceImpl();
 //	
 //		
 //		//5 create map xml
-//		String mapXmlRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
-//		BeanMapXmlCreate mXmlc =new BeanMapXmlCreate(tableName, fs, baseOutputDir, mapXmlRelativePackageDir);
-//		String xmpNamespace = mapRelativePackageDir.replaceAll("/", ".");
-//		xmpNamespace ="<mapper namespace=\""+xmpNamespace + "." + beanName +"Mapper\">";
-//		mXmlc.setNamespace( xmpNamespace);
-//		mXmlc.createMapXml();
+		String mapXmlRelativePackageDir = "com/chimade/"+middlePackageName+"/mapper";
+		BeanMapXmlCreate mXmlc =new BeanMapXmlCreate(tableName, fs, baseOutputDir, mapXmlRelativePackageDir);
+		String xmpNamespace = mapRelativePackageDir.replaceAll("/", ".");
+		xmpNamespace ="<mapper namespace=\""+xmpNamespace + "." + beanName +"Mapper\">";
+		mXmlc.setNamespace( xmpNamespace);
+		mXmlc.createMapXml();
 //		
 //		//6 create service interface implement
-//		String controllerRelativePackageDir ="com/chimade/"+middlePackageName+"/controller";
-//		ControllerCreate cc = new ControllerCreate(tableName, baseOutputDir, controllerRelativePackageDir);
-//		String modelPackageShortName3 =modelName;
-//		cc.setModelShortName( modelPackageShortName3 );
-//		cc.createControl();
+		String controllerRelativePackageDir ="com/chimade/"+middlePackageName+"/controller";
+		ControllerCreate cc = new ControllerCreate(tableName, baseOutputDir, controllerRelativePackageDir);
+		String modelPackageShortName3 =modelName;
+		cc.setModelShortName( modelPackageShortName3 );
+		cc.createControl();
 //		
 //		
 		//create Js

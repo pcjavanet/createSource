@@ -5,6 +5,27 @@ public class FieldWrapper {
 	private String type ;
 	private String javaFieldName ;
 	private boolean  isMoreWord  = false ;
+	private boolean isReferenBean = false ; 
+	private String refBeanName ; 
+	private String refBeanSmallName ; 
+	public String getRefBeanSmallName() {
+		return refBeanSmallName;
+	}
+	public void setRefBeanSmallName(String refBeanSmallName) {
+		this.refBeanSmallName = refBeanSmallName;
+	}
+	public String getRefBeanName() {
+		return refBeanName;
+	}
+	public void setRefBeanName(String refBeanName) {
+		this.refBeanName = refBeanName;
+	}
+	public boolean isReferenBean() {
+		return isReferenBean;
+	}
+	public void setReferenBean(boolean isReferenBean) {
+		this.isReferenBean = isReferenBean;
+	}
 	public boolean isMoreWord() {
 		return isMoreWord;
 	}

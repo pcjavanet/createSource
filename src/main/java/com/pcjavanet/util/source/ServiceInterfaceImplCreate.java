@@ -18,9 +18,7 @@ public class ServiceInterfaceImplCreate extends BaseCreate{
 	
     public    void createServiceInterfaceImpl() {
     	mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String lowClassName = Util.formatTableNameForStartLow(tableName);
-	    String fileName = className + "ServiceImpl.java" ; 
+	    String fileName = beanNameStartUpcase + "ServiceImpl.java" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		
 		StringBuffer buf = new StringBuffer();
@@ -28,12 +26,9 @@ public class ServiceInterfaceImplCreate extends BaseCreate{
 			BufferedReader br = new BufferedReader( new FileReader(templatePath));
 			String rd = br.readLine();
 			while ( rd != null ) {
-//				System.out.println( rd);
 				rd = rd.replaceAll(".mes.sys."	, "."+modelPackageShortName+".");
-				rd = rd.replaceAll("User", className);
-				rd=rd.replaceAll("user", lowClassName);
-//				rd = rd.replaceAll(".sys."	, "."+modelPackageShortName+".").replaceAll("User", className).replaceAll("user", lowClassName);
-
+				rd = rd.replaceAll("User", beanNameStartUpcase);
+				rd=rd.replaceAll("user", beanNameStartLowcase);
 				buf.append(rd).append("\r\n");
 				rd = br.readLine();
 			}

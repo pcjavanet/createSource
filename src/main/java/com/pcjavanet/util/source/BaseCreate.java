@@ -7,10 +7,14 @@ public class BaseCreate {
 	protected String modelRelativePackageDir ;
 	protected String baseOutputDir;
 	protected String fileOutputDir ;
+	protected String beanNameStartUpcase ;
+	protected String beanNameStartLowcase ;
 	public BaseCreate(String tableName , String baseOutputDir , String  modelRelativePackageDir) {
 		 this.tableName = tableName ; 
 		 this.baseOutputDir = baseOutputDir ;
 		 this.modelRelativePackageDir = modelRelativePackageDir ;
+		 this.beanNameStartLowcase = Util.formatTableNameForStartLow(	 this.tableName	);
+		 this.beanNameStartUpcase =  Util.formatTableNameForStartUp(	 this.tableName	);
 	}
  
 	public void mkdirs() {

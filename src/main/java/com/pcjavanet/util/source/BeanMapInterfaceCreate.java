@@ -16,22 +16,19 @@ public class BeanMapInterfaceCreate extends BaseCreate{
 	public   void createMapInterface( ) {
  
 		mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String fileName = className + "Mapper.java" ; 
+	    String fileName = beanNameStartUpcase + "Mapper.java" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		
 		StringBuffer buf = new StringBuffer();
-//		String packageStr ="package com.chimade.mes.sys.mapper;\r\n".replaceAll(" sys", modelPackageShortName);
 		String packageStr ="package com.chimade.mes.sys.mapper;\r\n".replaceAll("mes.sys", modelPackageShortName);
 		buf.append(packageStr);
 		buf.append("\r\n");
 		buf.append("import com.chimade.mes.sys.mapper.BaseMapper;");
 		buf.append("\r\n");
-//		String importBean= "import com.chimade.mes.sys.model.User;\r\n".replaceAll("sys", moduleName).replaceAll("User", beanName);
-		String importBean= "import com.chimade.mes.sys.model.User;\r\n".replaceAll("mes.sys", modelPackageShortName).replaceAll("User", className);
+ 		String importBean= "import com.chimade.mes.sys.model.User;\r\n".replaceAll("mes.sys", modelPackageShortName).replaceAll("User", beanNameStartUpcase);
 		buf.append(importBean);
 		buf.append("\r\n");
-		String classDeclare="public interface UserMapper extends BaseMapper<User> {\r\n".replaceAll("User", className);
+		String classDeclare="public interface UserMapper extends BaseMapper<User> {\r\n".replaceAll("User", beanNameStartUpcase);
 		buf.append(classDeclare);
 		buf.append("\r\n");
 		String end="}";

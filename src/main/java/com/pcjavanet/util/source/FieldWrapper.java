@@ -8,6 +8,13 @@ public class FieldWrapper {
 	private boolean isReferenBean = false ; 
 	private String refBeanName ; 
 	private String refBeanSmallName ; 
+	private String comment ;
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 	public String getRefBeanSmallName() {
 		return refBeanSmallName;
 	}

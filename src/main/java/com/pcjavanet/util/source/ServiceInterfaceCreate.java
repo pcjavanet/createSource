@@ -13,8 +13,7 @@ public class ServiceInterfaceCreate extends BaseCreate{
 
 	public  void createServiceInterface( ) {
 		mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String fileName = className + "Service.java" ; 
+	    String fileName = beanNameStartUpcase + "Service.java" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		
 		StringBuffer buf = new StringBuffer();
@@ -24,7 +23,7 @@ public class ServiceInterfaceCreate extends BaseCreate{
 		String  importBean = "import "+ beanFullPath +"; ";
 		buf.append(importBean).append("\r\n");
 		buf.append("import com.chimade.mes.sys.service.BaseService;").append("\r\n");
-		String  classDeclare="public interface UserService extends BaseService<User> {\r\n".replaceAll("User", className);
+		String  classDeclare="public interface UserService extends BaseService<User> {\r\n".replaceAll("User", beanNameStartUpcase);
 		buf.append(classDeclare).append("\r\n"); 
 		String end="}\r\n";
 		buf.append(end).append("\r\n");

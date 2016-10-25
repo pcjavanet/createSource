@@ -32,9 +32,7 @@ public class JsCreate extends BaseCreate{
 	private  void createModel() {
 		modelRelativePackageDir =  modelRelativePackageDir + File.separator +"model";
     	mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String lowClassName = Util.formatTableNameForStartLow(tableName);
-	    String fileName ="Sys"+ className + "Model.js" ; 
+	    String fileName ="Sys"+ beanNameStartUpcase + "Model.js" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		String replace="#replaceFeldArea";
 		StringBuffer buf = new StringBuffer();
@@ -53,8 +51,8 @@ public class JsCreate extends BaseCreate{
 			BufferedReader br = new BufferedReader( new FileReader(templatePathModel));
 			String rd = br.readLine();
 			while ( rd != null ) {
-				rd = rd.replaceAll("User", className);
-				rd=rd.replaceAll("user", lowClassName);
+				rd = rd.replaceAll("User", beanNameStartUpcase);
+				rd=rd.replaceAll("user", beanNameStartLowcase);
 				buf.append(rd).append("\r\n");
 				rd = br.readLine();
 			}
@@ -76,9 +74,7 @@ public class JsCreate extends BaseCreate{
 	private void createStore() {
 		modelRelativePackageDir =  modelRelativePackageDir + File.separator +"store";
     	mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String lowClassName = Util.formatTableNameForStartLow(tableName);
-	    String fileName ="Sys"+ className + "Store.js" ; 
+	    String fileName ="Sys"+ beanNameStartUpcase + "Store.js" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		
 		StringBuffer buf = new StringBuffer();
@@ -86,8 +82,8 @@ public class JsCreate extends BaseCreate{
 			BufferedReader br = new BufferedReader( new FileReader(templatePathStore));
 			String rd = br.readLine();
 			while ( rd != null ) {
-				rd = rd.replaceAll("User", className);
-				rd=rd.replaceAll("user", lowClassName);
+				rd = rd.replaceAll("User", beanNameStartUpcase);
+				rd=rd.replaceAll("user", beanNameStartLowcase);
 				buf.append(rd).append("\r\n");
 				rd = br.readLine();
 			}
@@ -107,9 +103,7 @@ public class JsCreate extends BaseCreate{
 	private void createView() {
 		modelRelativePackageDir =  modelRelativePackageDir + File.separator +"view/examples/forms";
     	mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String lowClassName = Util.formatTableNameForStartLow(tableName);
-	    String fileName = className + ".js" ; 
+	    String fileName = beanNameStartUpcase + ".js" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		
 		String  replaceEdit="#replaceEditArea";
@@ -122,7 +116,11 @@ public class JsCreate extends BaseCreate{
 			 fds.append("	{\r\n");
 			else 
 			 fds.append("			{\r\n");
-			 fds.append("			  fieldLabel:'").append(fs.get(i).getName()).append("' ,");
+			if  (    fs.get(i).getComment() != null && !"".equals(  fs.get(i).getComment()   )) {
+				fds.append("			  fieldLabel:'").append(  fs.get(i).getComment() ).append("' ,");
+			} else 
+				fds.append("			  fieldLabel:'").append(fs.get(i).getName()).append("' ,");
+			
 			fds.append("\r\n");
 			fds.append("			  name:'").append(fs.get(i).getJavaFieldName()).append("',");
 			fds.append("\r\n");
@@ -139,10 +137,19 @@ public class JsCreate extends BaseCreate{
 		StringBuffer cls = new StringBuffer();
 		
 		for(int i=0 ; i<fs.size() ;i++) {
-			if ( i==0 )
-				cls.append("	{ text:'").append(fs.get(i).getName()).append("' ,");
-			else
-				cls.append("		{ text:'").append(fs.get(i).getName()).append("' ,");
+			if ( i==0 ) {
+				if  (    fs.get(i).getComment() != null && !"".equals(  fs.get(i).getComment()   )) {
+					cls.append("	{ text:'").append(fs.get(i).getComment() ).append("' ,");
+				} else
+					cls.append("	{ text:'").append(fs.get(i).getName()).append("' ,");
+			}
+			else {
+				if  (    fs.get(i).getComment() != null && !"".equals(  fs.get(i).getComment()   )) {
+					cls.append("	{ text:'").append(fs.get(i).getComment() ).append("' ,");
+				} else 
+					cls.append("		{ text:'").append(fs.get(i).getName()).append("' ,");
+			}
+			
 			cls.append("		dataIndex:'").append(fs.get(i).getJavaFieldName()).append("' }");
 			 if (  i < (fs.size() -1) ){
 				 cls.append(" ,");
@@ -154,21 +161,37 @@ public class JsCreate extends BaseCreate{
 		StringBuffer  bf1 = new StringBuffer();
 		bf1.append("{\r\n			  items: [ ");
 		StringBuffer  bf2 = new StringBuffer();
+		
 		bf2.append("{\r\n			  items: [ ");
+		
 		for(int i=0 ; i<fs.size() ;i++) {
 				if ( i%2 ==0 ){
 					bf1.append("\r\n				{ ");
 					bf1.append("\r\n    				  xtype:'textfield',\r\n");
-					bf1.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
+					if  (    fs.get(i).getComment() != null && !"".equals(  fs.get(i).getComment()   )) {
+						bf1.append("				  fieldLabel:'"+  fs.get(i).getComment() +"',\r\n");
+					} else
+						bf1.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
 					bf1.append("				  name:'"+fs.get(i).getJavaFieldName()+"'\r\n");
+					if  (  fs.get(i).getName() .equalsIgnoreCase("id") ) {
+						bf1.append("		,		  hidden:true \r\n");
+					}
 					bf1.append("				} \r\n");
 				 
 					 bf1.append("				,");
 				} else {
-					bf2.append("\r\n				{ ");
+					bf2.append("\r\n				{  ");
 					bf2.append("\r\n    				  xtype:'textfield',\r\n");
-					bf2.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
+					
+					if  (    fs.get(i).getComment() != null && !"".equals(  fs.get(i).getComment()   )) {
+						bf2.append("				  fieldLabel:'"+  fs.get(i).getComment() +"',\r\n");
+					}  else
+						bf2.append("				  fieldLabel:'"+fs.get(i).getName()+"',\r\n");
+					
 					bf2.append("				  name:'"+fs.get(i).getJavaFieldName()+"'\r\n");
+					if  (  fs.get(i).getName() .equalsIgnoreCase("id") ) {
+						bf2.append("				,  hidden:true \r\n");
+					}
 					bf2.append("				} \r\n");
 					 bf2.append("				,");
 				}
@@ -185,8 +208,8 @@ public class JsCreate extends BaseCreate{
 			BufferedReader br = new BufferedReader( new FileReader(templatePathView));
 			String rd = br.readLine();
 			while ( rd != null ) {
-				rd = rd.replaceAll("User", className);
-				rd=rd.replaceAll("user", lowClassName);
+				rd = rd.replaceAll("User", beanNameStartUpcase);
+				rd=rd.replaceAll("user", beanNameStartLowcase);
 				buf.append(rd).append("\r\n");
 				rd = br.readLine();
 			}

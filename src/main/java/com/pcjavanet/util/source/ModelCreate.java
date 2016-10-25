@@ -28,6 +28,7 @@ public class ModelCreate extends BaseCreate{
 		}
 		return bf.toString();
 	}
+	
 	private String getFieldsRefBeans() {
 		StringBuffer bf = new StringBuffer();
 		for(int i=0 ; i<fs.size() ;i++) {
@@ -38,10 +39,10 @@ public class ModelCreate extends BaseCreate{
 		}
 		return bf.toString();
 	}
+	
 	public   void createModel(	) {
 		mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String fileName = className +".java";
+	    String fileName = beanNameStartUpcase +".java";
 		String  filePath = fileOutputDir+"/"+fileName;
 		try {
 			BufferedWriter bf = new BufferedWriter(  new FileWriter( filePath ) );
@@ -54,7 +55,7 @@ public class ModelCreate extends BaseCreate{
 			bf.write(getImportRefBeans());
 			bf.write("\r\n");
 			bf.write("\r\n");
-			String classNamePart= "public class "+className +"  extends PageableBaseModel {" ;
+			String classNamePart= "public class "+beanNameStartUpcase +"  extends PageableBaseModel {" ;
 		
 			bf.write(classNamePart);
 			bf.write("\r\n");

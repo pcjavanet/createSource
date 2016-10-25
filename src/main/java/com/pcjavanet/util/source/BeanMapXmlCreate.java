@@ -25,9 +25,8 @@ public class BeanMapXmlCreate extends BaseCreate{
 	public void createMapXml(  ) {
 		
     	mkdirs();
-	    String className = Util.formatTableNameForStartUp(tableName);
-	    String lowClassName = Util.formatTableNameForStartLow(tableName);
-	    String fileName = className + "Mapper.xml" ; 
+//	    String className = Util.formatTableNameForStartUp(tableName);
+	    String fileName = beanNameStartUpcase + "Mapper.xml" ; 
 		String  filePath = fileOutputDir+"/"+fileName;
 		  StringBuffer bf = new StringBuffer();
 		  bf.append( headerDelcare );

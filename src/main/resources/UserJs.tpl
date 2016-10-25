@@ -32,7 +32,7 @@ Ext.define('KitchenSink.view.examples.forms.UserEdit' , 	{
     		        ],
 
     		        buttons: [{
-    		            text: 'Save'
+    		            text: '保存'
     		         ,   handler: function() {
     		        	 
     		        	 	var win = this.up('window');
@@ -47,14 +47,13 @@ Ext.define('KitchenSink.view.examples.forms.UserEdit' , 	{
     		                			refreshStore.load();
     		                			win.close();
     		                		}
-    		                 
    		                	    }
     		                	}
     		                );
     		  
     		            }
     		        },{
-    		            text: 'Cancel'
+    		            text: '取消'
     		            , handler: function() {
     		            	this.up('window').close();
     		            }
@@ -126,7 +125,7 @@ Ext.define('KitchenSink.view.examples.forms.User', {
        		        #replaceSearchArea
        		        ],
        		        buttons: ['->', {
-       		            text: 'Search',
+       		            text: '查找',
                        	handler: function() {
 		                       		 var form = this.up('form').getForm();
 		                       		 var 	 user = form.getValues();
@@ -139,14 +138,14 @@ Ext.define('KitchenSink.view.examples.forms.User', {
 		                       		st.load( ) ;
                        	}
        		        }, {
-       		            text: 'Reset',
+       		            text: '重置',
        		            	handler: function() {
        	                		 var form = this.up('form').getForm();
        	                         form.reset();
        	                	}
        		        },
        		        {
-       		            text: 'New',
+       		            text: '新增',
        		            	handler: function() {
        		            		var p =  this.up('gridpanel').up().up() ;
        		            		var   constrainedWin = Ext.create(  'chmade.UserEdit', { title:'Add User', constrainTo : p.getEl() , refreshStore: this.up('gridpanel').getStore() } );
@@ -154,7 +153,7 @@ Ext.define('KitchenSink.view.examples.forms.User', {
        	                	}
        		        },{
        		 
-        		            text: 'Edit',
+        		            text: '编辑',
         		            	handler: function() {
         		            		var selModel =  this.up('gridpanel').getSelectionModel().getSelection() ; 
         		            		if  ( selModel.length == 1 ) {
@@ -167,7 +166,7 @@ Ext.define('KitchenSink.view.examples.forms.User', {
         		            		}
         		            	}
        		        },{
-        		            text: 'Delete',
+        		            text: '删除',
         		            	handler: function() {
 
         		            		var gridPanel =  this.up('gridpanel') ;

@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainRun {
@@ -25,11 +28,44 @@ public class MainRun {
 	}
 
 	
+	public static Map<String,String> getColumnComment( String table , Connection con) {
+		StringBuffer buf = new StringBuffer() ; 
+		buf.append(" SELECT ");
+		buf.append("  cols.column_name, ");
+		buf.append("  ( ");
+		buf.append("      SELECT ");
+		buf.append("          pg_catalog.col_description(c.oid, cols.ordinal_position::int) ");
+		buf.append("       FROM ");
+		buf.append("      pg_catalog.pg_class c ");
+		buf.append("     WHERE ");
+		buf.append("       c.oid = (SELECT ('\"' || cols.table_name || '\"')::regclass::oid) ");
+		buf.append("        AND c.relname = cols.table_name ");
+		buf.append("    ) AS column_comment ");
+		buf.append(" FROM ");
+		buf.append("     information_schema.columns cols ");
+		buf.append(" WHERE ");
+		buf.append("    cols.table_catalog    = 'imes' ");
+		buf.append("   AND cols.table_name   = '"+table+"' ");
+		buf.append("   AND cols.table_schema = 'public';  ");
 	
+		Map<String,String> columnComments  = new HashMap<String,String>();
+		try {
+			ResultSet 	rs = con.createStatement().executeQuery(  buf.toString() );
+			while (rs.next()) {
+				String name = rs.getString("column_name") ;
+				String comment = rs.getString("column_comment") ;
+				columnComments.put(name, comment	);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return columnComments ; 
+	}
 	public static List<FieldWrapper> getTableFields( String tableName ) {
 		List<FieldWrapper> ls =  new ArrayList<FieldWrapper>();
 		try {
 			Connection connection = getConnection();
+			 Map<String,String>  m = getColumnComment( tableName, connection);
 			String sql = "   select * from  " + tableName ;
 			ResultSet rs = connection.createStatement().executeQuery(  sql );
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -60,6 +96,12 @@ public class MainRun {
         		if ( isMoreWord )
         			fw.setMoreWord(true);
         		fw.setName(name);
+        		fw.setComment(  name );
+        		if  (    m.get(name) != null  ) {
+        			String cm = m.get(name) ;
+        			if   ( cm != null && !"".equals(cm))
+        				fw.setComment(  cm );
+        		}
         		fw.setType(typeName);
         		fw.setJavaFieldName(javaName);
         		if ( name.indexOf("_id")  !=-1 ) {
@@ -85,9 +127,14 @@ public class MainRun {
 		Util.init();
 //		String[]  ts ={ "company" ,"factory" ,"label" ,"label_detail" ,"label_template","line" ,"location" ,"part" ,"part_family" ,"printer" ,"process","shopfloor"};
 		String[] ts={
+				"base_model",
 				"base_authorize_model_action"
-				 ,
-				"base_action","base_model_action","base_factory_user","base_role" };
+				/*
+					"base_model"
+				"base_authorize_model_action",
+				 
+				"base_action","base_model_action","base_factory_user","base_role"*/
+				};
 		for(int k=0 ; k< ts.length ;k++) {
 		String tableName = ts[k];
 				//"company";

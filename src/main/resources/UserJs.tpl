@@ -36,21 +36,21 @@ Ext.define('KitchenSink.view.examples.forms.UserEdit' , 	{
     		         ,   handler: function() {
     		        	 
     		        	 	var win = this.up('window');
-    		                this.up('form').getForm().isValid();
-    		                var form = this.up('form').getForm();
-    		                var formValues = form.getValues();
-    		                var beanModel = Ext.create('model.SysUserModel',  formValues);
-    		                beanModel.save({
-    		                	success: function(record ,response ) {
-    		                		var r = Ext.decode(response.response.responseText) ;
-    		                		if (r.resultFlag){
-    		                			refreshStore.load();
-    		                			win.close();
-    		                		}
-   		                	    }
-    		                	}
-    		                );
-    		  
+    		                if (   this.up('form').getForm().isValid() ) {  
+	    		                var form = this.up('form').getForm();
+	    		                var formValues = form.getValues();
+	    		                var beanModel = Ext.create('model.SysUserModel',  formValues);
+	    		                beanModel.save({
+	    		                	success: function(record ,response ) {
+	    		                		var r = Ext.decode(response.response.responseText) ;
+	    		                		if (r.resultFlag){
+	    		                			refreshStore.load();
+	    		                			win.close();
+	    		                		}
+	   		                	    }
+	    		                	}
+	    		                );
+    		  				}
     		            }
     		        },{
     		            text: '取消'

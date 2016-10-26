@@ -127,7 +127,7 @@ public class MainRun {
 		Util.init();
 //		String[]  ts ={ "company" ,"factory" ,"label" ,"label_detail" ,"label_template","line" ,"location" ,"part" ,"part_family" ,"printer" ,"process","shopfloor"};
 		String[] ts={
-				"base_model",
+//				"base_model_action"
 				"base_authorize_model_action"
 				/*
 					"base_model"

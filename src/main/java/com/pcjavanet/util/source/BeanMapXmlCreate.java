@@ -116,7 +116,7 @@ public class BeanMapXmlCreate extends BaseCreate{
         buf.append("	</where>");
         buf.append("</sql>");
 	}
-	
+	   
 	private void createSelectColumnsForInclude( StringBuffer bf) {
 		StringBuffer fds = new StringBuffer();
 		for(int i=0 ;i < fs.size() ;i++) {

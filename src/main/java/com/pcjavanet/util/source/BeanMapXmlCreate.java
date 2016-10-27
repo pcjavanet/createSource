@@ -140,16 +140,16 @@ public class BeanMapXmlCreate extends BaseCreate{
 			FieldWrapper fw = refIds.get(i);
 			
 			 if ( fw.isReferenBean() ) {
-				 String beanName = fw.getRefBeanName();
+				 String beanNameRef= fw.getRefBeanName();
 				 String beanSmallName = fw.getRefBeanSmallName();
 				 StringBuffer bf = new StringBuffer();
 				 if ( first ) {
 				 bf.append( "<!-- 	<resultMap id=\"combineFactory\"    type=\"com.chimade.mes.sys.model.Factory\"> -->\r\n".replaceAll("Factory", beanName));
-				 bf.append( "<!-- 	        <result property=\"companyId\" column=\"companyId\" />   -->\r\n".replaceAll("companyId",	beanSmallName));
+				 bf.append( "<!-- 	        <result property=\"companyId\" column=\"company_id\" />   -->\r\n".replaceAll("company",	beanSmallName));
 				 first = false ;
 				 }
-				 bf.append( "<!-- 			<association    property=\"company\"   column=\"companyId\"	 	javaType=\"Company\"   select=\"com.chimade.mes.sys.mapper.CompanyMapper.findById\"  />  -->\r\n".
-						 replaceAll("company", beanSmallName) . replaceAll("Company", beanName));
+				 bf.append( "<!-- 			<association    property=\"company\"   column=\"company_id\"	 	javaType=\"Company\"   select=\"com.chimade.mes.sys.mapper.CompanyMapper.findById\"  />  -->\r\n".
+						 replaceAll("company", beanSmallName) . replaceAll("Company", beanNameRef));
 				 strbuf.append(bf.toString() );
 			 }
 		}
@@ -251,7 +251,7 @@ public class BeanMapXmlCreate extends BaseCreate{
 		}
         buf.append("	</where>");*/
 //        buf.append("\r\n");
-		buf.append("	<include refid=\"where\" /> ");
+		buf.append("	<include refid=\"where\" />\r\n ");
 		return buf.toString();
 	}
 	private void createFindByBean(StringBuffer bf ) {
@@ -274,7 +274,8 @@ public class BeanMapXmlCreate extends BaseCreate{
 		bf.append( "\r\n" );
 	    bf.append(" 	<if test=\"start>-1 and limit>-1\">");
 	    bf.append( "\r\n" );
-	    bf.append( " 	  limit #{limit}   offset #{start}");
+	    bf.append( " 	 	 limit #{limit}   offset #{start}");
+	    bf.append( "\r\n" );
 	    bf.append( "  	 </if> ");
         bf.append( "\r\n" );
 		String suffer = "	</select>";
